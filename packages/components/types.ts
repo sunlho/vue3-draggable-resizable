@@ -1,5 +1,5 @@
-import { Ref } from 'vue'
-import { initParent } from './hooks'
+import { Ref } from "vue"
+import { initParent } from "./hooks"
 
 export interface Position {
   x: number
@@ -32,22 +32,13 @@ export interface MatchedLine {
 }
 export type SetMatchedLine = (matchedLine: MatchedLine | null) => void
 
-export type ResizingHandle =
-  | 'tl'
-  | 'tm'
-  | 'tr'
-  | 'ml'
-  | 'mr'
-  | 'bl'
-  | 'bm'
-  | 'br'
-  | ''
+export type ResizingHandle = "tl" | "tm" | "tr" | "ml" | "mr" | "bl" | "bm" | "br" | ""
 
 export type ParentSize = ReturnType<typeof initParent>
 
 export type ReferenceLineMap = Record<
-  'col' | 'row',
+  "col" | "row",
   {
-    [propName: number]: Record<'min' | 'max' | 'value', number>
+    [propName: number]: Record<"min" | "max" | "value", number>
   }
 >

@@ -1,42 +1,31 @@
-import {
-  ContainerProvider,
-  ParentSize,
-  ReferenceLineMap,
-  ResizingHandle
-} from './types'
-import { ALL_HANDLES } from './Vue3DraggableResizable'
+import { ContainerProvider, ParentSize, ReferenceLineMap, ResizingHandle } from "./types"
+import { ALL_HANDLES } from "./Vue3DraggableResizable"
 
-export const IDENTITY = Symbol('Vue3DraggableResizable')
+export const IDENTITY = Symbol("Vue3DraggableResizable")
 
 export function getElSize(el: Element) {
   const style = window.getComputedStyle(el)
   return {
-    width: parseFloat(style.getPropertyValue('width')),
-    height: parseFloat(style.getPropertyValue('height'))
+    width: parseFloat(style.getPropertyValue("width")),
+    height: parseFloat(style.getPropertyValue("height")),
   }
 }
 
-function createEventListenerFunction(
-  type: 'addEventListener' | 'removeEventListener'
-) {
-  return <K extends keyof HTMLElementEventMap>(
-    el: HTMLElement,
-    events: K | K[],
-    handler: any
-  ) => {
+function createEventListenerFunction(type: "addEventListener" | "removeEventListener") {
+  return <K extends keyof HTMLElementEventMap>(el: HTMLElement, events: K | K[], handler: any) => {
     if (!el) {
       return
     }
-    if (typeof events === 'string') {
+    if (typeof events === "string") {
       events = [events]
     }
     events.forEach((e) => el[type](e, handler, { passive: false }))
   }
 }
 
-export const addEvent = createEventListenerFunction('addEventListener')
+export const addEvent = createEventListenerFunction("addEventListener")
 
-export const removeEvent = createEventListenerFunction('removeEventListener')
+export const removeEvent = createEventListenerFunction("removeEventListener")
 
 export function filterHandles(handles: ResizingHandle[]) {
   if (handles && handles.length > 0) {
@@ -56,17 +45,13 @@ export function getId() {
   return String(Math.random()).substr(2) + String(Date.now())
 }
 
-export function getReferenceLineMap(
-  containerProvider: ContainerProvider,
-  parentSize: ParentSize,
-  id?: string
-) {
+export function getReferenceLineMap(containerProvider: ContainerProvider, parentSize: ParentSize, id?: string) {
   if (containerProvider.disabled.value) {
     return null
   }
   const referenceLine = {
     row: [] as number[],
-    col: [] as number[]
+    col: [] as number[],
   }
   const { parentWidth, parentHeight } = parentSize
   referenceLine.row.push(...containerProvider.adsorbRows)
@@ -86,7 +71,7 @@ export function getReferenceLineMap(
     }, {}),
     col: referenceLine.col.reduce((pre, cur) => {
       return { ...pre, [cur]: { min: cur - 5, max: cur + 5, value: cur } }
-    }, {})
+    }, {}),
   }
   return referenceLineMap
 }

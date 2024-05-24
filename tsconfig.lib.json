@@ -14,20 +14,11 @@
     "noEmit": true,
     "lib": ["esnext", "DOM", "DOM.iterable", "scripthost"],
     "jsx": "preserve",
-    "jsxImportSource": "vue"
+    "jsxImportSource": "vue",
+    "typeRoots": ["types"],
+    "declaration": true,
+    "declarationDir": "dist/types"
   },
-  "include": [
-    "vite.config.ts",
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "packages/**/*.ts",
-    "packages/**/*.d.ts",
-    "packages/**/*.tsx",
-    "packages/**/*.vue",
-    "packages/components/Vue3DraggableResizable.text",
-    "packages/components/.txtDraggableContainer"
-  ],
+  "include": ["packages/**/*.ts", "packages/**/*.d.ts", "packages/**/*.tsx", "packages/**/*.vue"],
   "exclude": ["node_modules", "dist", "**/*.js"]
 }

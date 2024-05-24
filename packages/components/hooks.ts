@@ -1,18 +1,6 @@
-import { onMounted, onUnmounted, ref, watch, Ref, computed } from 'vue'
-import {
-  getElSize,
-  filterHandles,
-  getId,
-  getReferenceLineMap,
-  addEvent,
-  removeEvent
-} from './utils'
-import {
-  ContainerProvider,
-  MatchedLine,
-  ReferenceLineMap,
-  ResizingHandle
-} from './types'
+import { onMounted, onUnmounted, ref, watch, Ref, computed } from "vue"
+import { getElSize, filterHandles, getId, getReferenceLineMap, addEvent, removeEvent } from "./utils"
+import { ContainerProvider, MatchedLine, ReferenceLineMap, ResizingHandle } from "./types"
 
 type HandleEvent = MouseEvent | TouchEvent
 
@@ -33,7 +21,7 @@ export function initState(props: any, emit: any) {
   const [enable, setEnable] = useState<boolean>(props.active)
   const [dragging, setDragging] = useState<boolean>(false)
   const [resizing, setResizing] = useState<boolean>(false)
-  const [resizingHandle, setResizingHandle] = useState<ResizingHandle>('')
+  const [resizingHandle, setResizingHandle] = useState<ResizingHandle>("")
   const [resizingMaxWidth, setResizingMaxWidth] = useState<number>(Infinity)
   const [resizingMaxHeight, setResizingMaxHeight] = useState<number>(Infinity)
   const [resizingMinWidth, setResizingMinWidth] = useState<number>(props.minW)
@@ -42,29 +30,29 @@ export function initState(props: any, emit: any) {
   watch(
     width,
     (newVal) => {
-      emit('update:w', newVal)
+      emit("update:w", newVal)
     },
     { immediate: true }
   )
   watch(
     height,
     (newVal) => {
-      emit('update:h', newVal)
+      emit("update:h", newVal)
     },
     { immediate: true }
   )
   watch(top, (newVal) => {
-    emit('update:y', newVal)
+    emit("update:y", newVal)
   })
   watch(left, (newVal) => {
-    emit('update:x', newVal)
+    emit("update:x", newVal)
   })
   watch(enable, (newVal, oldVal) => {
-    emit('update:active', newVal)
+    emit("update:active", newVal)
     if (!oldVal && newVal) {
-      emit('activated')
+      emit("activated")
     } else if (oldVal && !newVal) {
-      emit('deactivated')
+      emit("deactivated")
     }
   })
   watch(
@@ -99,13 +87,14 @@ export function initState(props: any, emit: any) {
     setWidth: (val: number) => setWidth(Math.floor(val)),
     setHeight: (val: number) => setHeight(Math.floor(val)),
     setTop: (val: number) => setTop(Math.floor(val)),
-    setLeft: (val: number) => setLeft(Math.floor(val))
+    setLeft: (val: number) => setLeft(Math.floor(val)),
   }
 }
 
 export function initParent(containerRef: Ref<HTMLElement | undefined>) {
   const parentWidth = ref(0)
   const parentHeight = ref(0)
+
   onMounted(() => {
     if (containerRef.value && containerRef.value.parentElement) {
       const { width, height } = getElSize(containerRef.value.parentElement)
@@ -113,27 +102,15 @@ export function initParent(containerRef: Ref<HTMLElement | undefined>) {
       parentHeight.value = height
     }
   })
+
   return {
     parentWidth,
-    parentHeight
+    parentHeight,
   }
 }
 
-export function initLimitSizeAndMethods(
-  props: any,
-  parentSize: ReturnType<typeof initParent>,
-  containerProps: ReturnType<typeof initState>
-) {
-  const {
-    width,
-    height,
-    left,
-    top,
-    resizingMaxWidth,
-    resizingMaxHeight,
-    resizingMinWidth,
-    resizingMinHeight
-  } = containerProps
+export function initLimitSizeAndMethods(props: any, parentSize: ReturnType<typeof initParent>, containerProps: ReturnType<typeof initState>) {
+  const { width, height, left, top, resizingMaxWidth, resizingMaxHeight, resizingMinWidth, resizingMinHeight } = containerProps
   const { setWidth, setHeight, setTop, setLeft } = containerProps
   const { parentWidth, parentHeight } = parentSize
   const limitProps = {
@@ -168,66 +145,46 @@ export function initLimitSizeAndMethods(
     }),
     maxTop: computed(() => {
       return props.parent ? parentHeight.value - height.value : Infinity
-    })
+    }),
   }
   const limitMethods = {
     setWidth(val: number) {
       if (props.disabledW) {
         return width.value
       }
-      return setWidth(
-        Math.min(
-          limitProps.maxWidth.value,
-          Math.max(limitProps.minWidth.value, val)
-        )
-      )
+      return setWidth(Math.min(limitProps.maxWidth.value, Math.max(limitProps.minWidth.value, val)))
     },
     setHeight(val: number) {
       if (props.disabledH) {
         return height.value
       }
-      return setHeight(
-        Math.min(
-          limitProps.maxHeight.value,
-          Math.max(limitProps.minHeight.value, val)
-        )
-      )
+      return setHeight(Math.min(limitProps.maxHeight.value, Math.max(limitProps.minHeight.value, val)))
     },
     setTop(val: number) {
       if (props.disabledY) {
         return top.value
       }
-      return setTop(
-        Math.min(
-          limitProps.maxTop.value,
-          Math.max(limitProps.minTop.value, val)
-        )
-      )
+      return setTop(Math.min(limitProps.maxTop.value, Math.max(limitProps.minTop.value, val)))
     },
     setLeft(val: number) {
       if (props.disabledX) {
         return left.value
       }
-      return setLeft(
-        Math.min(
-          limitProps.maxLeft.value,
-          Math.max(limitProps.minLeft.value, val)
-        )
-      )
-    }
+      return setLeft(Math.min(limitProps.maxLeft.value, Math.max(limitProps.minLeft.value, val)))
+    },
   }
   return {
     ...limitProps,
-    ...limitMethods
+    ...limitMethods,
   }
 }
 
-const DOWN_HANDLES: (keyof HTMLElementEventMap)[] = ['mousedown', 'touchstart']
-const UP_HANDLES: (keyof HTMLElementEventMap)[] = ['mouseup', 'touchend']
-const MOVE_HANDLES: (keyof HTMLElementEventMap)[] = ['mousemove', 'touchmove']
+const DOWN_HANDLES: (keyof HTMLElementEventMap)[] = ["mousedown", "touchstart"]
+const UP_HANDLES: (keyof HTMLElementEventMap)[] = ["mouseup", "touchend"]
+const MOVE_HANDLES: (keyof HTMLElementEventMap)[] = ["mousemove", "touchmove"]
 
 function getPosition(e: HandleEvent) {
-  if ('touches' in e) {
+  if ("touches" in e) {
     return [e.touches[0].pageX, e.touches[0].pageY]
   } else {
     return [e.pageX, e.pageY]
@@ -244,12 +201,7 @@ export function initDraggableContainer(
   parentSize: ReturnType<typeof initParent>
 ) {
   const { left: x, top: y, width: w, height: h, dragging, id } = containerProps
-  const {
-    setDragging,
-    setEnable,
-    setResizing,
-    setResizingHandle
-  } = containerProps
+  const { setDragging, setEnable, setResizing, setResizingHandle } = containerProps
   const { setTop, setLeft } = limitProps
   let lstX = 0
   let lstY = 0
@@ -263,7 +215,7 @@ export function initDraggableContainer(
       setEnable(false)
       setDragging(false)
       setResizing(false)
-      setResizingHandle('')
+      setResizingHandle("")
     }
   }
   const handleUp = () => {
@@ -278,7 +230,7 @@ export function initDraggableContainer(
         x: x.value,
         y: y.value,
         w: w.value,
-        h: h.value
+        h: h.value,
       })
       containerProvider.setMatchedLine(null)
     }
@@ -294,12 +246,12 @@ export function initDraggableContainer(
     if (referenceLineMap !== null) {
       const widgetSelfLine = {
         col: [newLeft, newLeft + w.value / 2, newLeft + w.value],
-        row: [newTop, newTop + h.value / 2, newTop + h.value]
+        row: [newTop, newTop + h.value / 2, newTop + h.value],
       }
       const matchedLine: unknown = {
         row: widgetSelfLine.row
           .map((i, index) => {
-            let match = null
+            let match: number | null = null
             Object.values(referenceLineMap!.row).forEach((referItem) => {
               if (i >= referItem.min && i <= referItem.max) {
                 match = referItem.value
@@ -319,7 +271,7 @@ export function initDraggableContainer(
           .filter((i) => i !== null),
         col: widgetSelfLine.col
           .map((i, index) => {
-            let match = null
+            let match: null | number = null
             Object.values(referenceLineMap!.col).forEach((referItem) => {
               if (i >= referItem.min && i <= referItem.max) {
                 match = referItem.value
@@ -336,11 +288,11 @@ export function initDraggableContainer(
             }
             return match
           })
-          .filter((i) => i !== null)
+          .filter((i) => i !== null),
       }
       containerProvider!.setMatchedLine(matchedLine as MatchedLine)
     }
-    emit('dragging', { x: setLeft(newLeft), y: setTop(newTop) })
+    emit("dragging", { x: setLeft(newLeft), y: setTop(newTop) })
   }
   const handleDown = (e: HandleEvent) => {
     if (!draggable.value) return
@@ -359,23 +311,38 @@ export function initDraggableContainer(
   }
   watch(dragging, (cur, pre) => {
     if (!pre && cur) {
-      emit('drag-start', { x: x.value, y: y.value })
+      emit("drag-start", { x: x.value, y: y.value })
       setEnable(true)
       setDragging(true)
     } else {
-      emit('drag-end', { x: x.value, y: y.value })
+      emit("drag-end", { x: x.value, y: y.value })
       setDragging(false)
     }
   })
+
+  const observer = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      parentSize.parentWidth.value = entry.contentRect.width
+      parentSize.parentHeight.value = entry.contentRect.height
+      if (x.value + w.value > parentSize.parentWidth.value) {
+        setLeft(parentSize.parentWidth.value - w.value)
+      }
+      if (y.value + h.value > parentSize.parentHeight.value) {
+        setTop(parentSize.parentHeight.value - h.value)
+      }
+    }
+  })
+
   onMounted(() => {
     const el = containerRef.value
     if (!el) return
-    el.style.left = x + 'px'
-    el.style.top = y + 'px'
+    el.style.left = x + "px"
+    el.style.top = y + "px"
     // document.documentElement.addEventListener('mousedown', _unselect)
     // el.addEventListener('mousedown', handleDown)
     addEvent(documentElement, DOWN_HANDLES, _unselect)
     addEvent(el, DOWN_HANDLES, handleDown)
+    containerRef.value?.parentElement && observer.observe(containerRef.value.parentElement)
   })
   onUnmounted(() => {
     if (!containerRef.value) return
@@ -386,6 +353,7 @@ export function initDraggableContainer(
     removeEvent(documentElement, UP_HANDLES, handleUp)
     removeEvent(documentElement, MOVE_HANDLES, handleDrag)
   })
+
   return { containerRef }
 }
 
@@ -398,14 +366,7 @@ export function initResizeHandle(
 ) {
   const { setWidth, setHeight, setLeft, setTop } = limitProps
   const { width, height, left, top, aspectRatio } = containerProps
-  const {
-    setResizing,
-    setResizingHandle,
-    setResizingMaxWidth,
-    setResizingMaxHeight,
-    setResizingMinWidth,
-    setResizingMinHeight
-  } = containerProps
+  const { setResizing, setResizingHandle, setResizingMaxWidth, setResizingMaxHeight, setResizingMinWidth, setResizingMinHeight } = containerProps
   const { parentWidth, parentHeight } = parentSize
   let lstW = 0
   let lstH = 0
@@ -414,8 +375,8 @@ export function initResizeHandle(
   let lstPageX = 0
   let lstPageY = 0
   let tmpAspectRatio = 1
-  let idx0 = ''
-  let idx1 = ''
+  let idx0 = ""
+  let idx1 = ""
   const documentElement = document.documentElement
   const resizeHandleDrag = (e: HandleEvent) => {
     e.preventDefault()
@@ -427,45 +388,45 @@ export function initResizeHandle(
     if (props.lockAspectRatio) {
       deltaX = Math.abs(deltaX)
       deltaY = deltaX * tmpAspectRatio
-      if (idx0 === 't') {
-        if (_deltaX < 0 || (idx1 === 'm' && _deltaY < 0)) {
+      if (idx0 === "t") {
+        if (_deltaX < 0 || (idx1 === "m" && _deltaY < 0)) {
           deltaX = -deltaX
           deltaY = -deltaY
         }
       } else {
-        if (_deltaX < 0 || (idx1 === 'm' && _deltaY < 0)) {
+        if (_deltaX < 0 || (idx1 === "m" && _deltaY < 0)) {
           deltaX = -deltaX
           deltaY = -deltaY
         }
       }
     }
-    if (idx0 === 't') {
+    if (idx0 === "t") {
       setHeight(lstH - deltaY)
       setTop(lstY - (height.value - lstH))
-    } else if (idx0 === 'b') {
+    } else if (idx0 === "b") {
       setHeight(lstH + deltaY)
     }
-    if (idx1 === 'l') {
+    if (idx1 === "l") {
       setWidth(lstW - deltaX)
       setLeft(lstX - (width.value - lstW))
-    } else if (idx1 === 'r') {
+    } else if (idx1 === "r") {
       setWidth(lstW + deltaX)
     }
-    emit('resizing', {
+    emit("resizing", {
       x: left.value,
       y: top.value,
       w: width.value,
-      h: height.value
+      h: height.value,
     })
   }
   const resizeHandleUp = () => {
-    emit('resize-end', {
+    emit("resize-end", {
       x: left.value,
       y: top.value,
       w: width.value,
-      h: height.value
+      h: height.value,
     })
-    setResizingHandle('')
+    setResizingHandle("")
     setResizing(false)
     setResizingMaxWidth(Infinity)
     setResizingMaxHeight(Infinity)
@@ -484,12 +445,12 @@ export function initResizeHandle(
     idx0 = handleType[0]
     idx1 = handleType[1]
     if (props.lockAspectRatio) {
-      if (['tl', 'tm', 'ml', 'bl'].includes(handleType)) {
-        idx0 = 't'
-        idx1 = 'l'
+      if (["tl", "tm", "ml", "bl"].includes(handleType)) {
+        idx0 = "t"
+        idx1 = "l"
       } else {
-        idx0 = 'b'
-        idx1 = 'r'
+        idx0 = "b"
+        idx1 = "r"
       }
     }
     let minHeight = props.minH as number
@@ -504,10 +465,8 @@ export function initResizeHandle(
     setResizingMinWidth(minWidth)
     setResizingMinHeight(minHeight)
     if (props.parent) {
-      let maxHeight =
-        idx0 === 't' ? top.value + height.value : parentHeight.value - top.value
-      let maxWidth =
-        idx1 === 'l' ? left.value + width.value : parentWidth.value - left.value
+      let maxHeight = idx0 === "t" ? top.value + height.value : parentHeight.value - top.value
+      let maxWidth = idx1 === "l" ? left.value + width.value : parentWidth.value - left.value
       if (props.lockAspectRatio) {
         if (maxHeight / maxWidth < aspectRatio.value) {
           maxWidth = maxHeight / aspectRatio.value
@@ -526,11 +485,11 @@ export function initResizeHandle(
     lstPageX = lstPagePosition[0]
     lstPageY = lstPagePosition[1]
     tmpAspectRatio = aspectRatio.value
-    emit('resize-start', {
+    emit("resize-start", {
       x: left.value,
       y: top.value,
       w: width.value,
-      h: height.value
+      h: height.value,
     })
     // document.documentElement.addEventListener('mousemove', resizeHandleDrag)
     // document.documentElement.addEventListener('mouseup', resizeHandleUp)
@@ -543,19 +502,14 @@ export function initResizeHandle(
     removeEvent(documentElement, UP_HANDLES, resizeHandleUp)
     removeEvent(documentElement, MOVE_HANDLES, resizeHandleDrag)
   })
-  const handlesFiltered = computed(() =>
-    props.resizable ? filterHandles(props.handles) : []
-  )
+  const handlesFiltered = computed(() => (props.resizable ? filterHandles(props.handles) : []))
   return {
     handlesFiltered,
-    resizeHandleDown
+    resizeHandleDown,
   }
 }
 
-export function watchProps(
-  props: any,
-  limits: ReturnType<typeof initLimitSizeAndMethods>
-) {
+export function watchProps(props: any, limits: ReturnType<typeof initLimitSizeAndMethods>) {
   const { setWidth, setHeight, setLeft, setTop } = limits
   watch(
     () => props.w,

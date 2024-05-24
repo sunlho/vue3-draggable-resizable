@@ -1,17 +1,26 @@
+<script lang="ts" setup>
+import { ref } from "vue"
+import { Vue3DraggableResizable, DraggableContainer } from "../packages/index"
+
+const x = ref(100)
+const y = ref(100)
+const h = ref(100)
+const w = ref(100)
+const active = ref(false)
+const draggable = ref(true)
+const resizable = ref(true)
+
+const print = (val: string, e?: MouseEvent) => {
+  console.log(val, e)
+}
+</script>
+
 <template>
   <div id="app">
-    <div>
-      x:{{ x }} <button @click="x += 10">+</button><button @click="x -= 10">-</button>
-    </div>
-    <div>
-      y:{{ y }}<button @click="y += 10">+</button><button @click="y -= 10">-</button>
-    </div>
-    <div>
-      w:{{ w }}<button @click="w += 10">+</button><button @click="w -= 10">-</button>
-    </div>
-    <div>
-      h: {{ h }}<button @click="h += 10">+</button><button @click="h -= 10">-</button>
-    </div>
+    <div>x:{{ x }} <button @click="x += 10">+</button><button @click="x -= 10">-</button></div>
+    <div>y:{{ y }}<button @click="y += 10">+</button><button @click="y -= 10">-</button></div>
+    <div>w:{{ w }}<button @click="w += 10">+</button><button @click="w -= 10">-</button></div>
+    <div>h: {{ h }}<button @click="h += 10">+</button><button @click="h -= 10">-</button></div>
     <div>active:{{ active }}<br /></div>
     <div class="parent">
       <Vue3DraggableResizable
@@ -46,43 +55,14 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-import Vue3DraggableResizable from "./components/Vue3DraggableResizable";
-import DraggableContainer from "./components/DraggableContainer";
-
-export default defineComponent({
-  components: { DraggableContainer, Vue3DraggableResizable },
-  data() {
-    return {
-      x: 100,
-      y: 100,
-      h: 100,
-      w: 100,
-      active: false,
-      draggable: true,
-      resizable: true,
-    };
-  },
-  mounted() {},
-  methods: {
-    print(val, e) {
-      // console.log(val, e)
-    },
-  },
-});
-</script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .parent {
   width: 300px;
   height: 300px;
-  // position: absolute;
-  // top: 100px;
-  // left: 200px;
   position: relative;
   border: 1px solid #000;
   user-select: none;
-  ::v-deep {
+  :deep() {
     .vdr-container {
       border-color: #999;
     }
